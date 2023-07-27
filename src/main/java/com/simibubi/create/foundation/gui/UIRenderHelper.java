@@ -1,70 +1,70 @@
-package com.simibubi.create.foundation.gui;
+包com.simibubi.create.foundation.gui；
 
-import javax.annotation.Nonnull;
+进口javax.annotation.noull；
 
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
+进口org.lwjgl.opengl.GL20；
+进口org.lwjgl.opengl.GL30；
 
-import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.platform.GlConst;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.simibubi.create.foundation.utility.Color;
-import com.simibubi.create.foundation.utility.Couple;
+进口com.mojang.blaze3d.pipeline.RenderTarget；
+进口com.mojang.blaze3d.platform.GlConst；
+进口com.mojang.blaze3d.platform.GlStateManager；
+进口com.mojang.blaze3d.platform.window；
+进口com.mojang.blaze3d.systems.RenderSystem；
+进口com.mojang.blaze3d.vertex.BufferBuilder；
+进口com.莫姜。blaze3d.vertex.DefaultVertexFormat；
+进口com.mojang.blaze3d.vertex.PoseStack；
+进口com.mojang.blaze3d.vertex.Tesselator；
+进口com.mojang.blaze3d.vertex.vertexFormat；
+进口com.mojang.math.Matrix4f；
+进口com.mojang.math.Vector3f；
+进口simibubi.create.foundation。实用程序.颜色；
+进口com.simibubi.创造。基础。功能。夫妇；
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraftforge.client.gui.GuiUtils;
+进口net.minecraft.client.Minecraft；
+进口net.minecraft.client.renderer.GameRenderer；
+进口net.minecraftforge.client.gui.GuuiUtils；
 
-public class UIRenderHelper {
+公共班级UIRenderHelper{
 
 	/**
-	 * An FBO that has a stencil buffer for use wherever stencil are necessary. Forcing the main FBO to have a stencil
-	 * buffer will cause GL error spam when using fabulous graphics.
-	 */
-	public static CustomRenderTarget framebuffer;
+*在需要模具的地方使用模具缓冲区的固定基地运营商。 强制主固定基地运营商拥有模具
+*缓冲区将导致GL错误垃圾时，使用神话般的图形。
+*/
+公共静态的CustomRenderTarget帧缓冲区；
 
-	public static void init() {
-		RenderSystem.recordRenderCall(() -> {
-			Window mainWindow = Minecraft.getInstance().getWindow();
-			framebuffer = CustomRenderTarget.create(mainWindow);
+公共 静态的 无效的init() {
+rendersystem。recordRenderCall(()->{
+窗户主窗口=我的世界。getInstance().GetWindow();
+帧缓冲区=CustomRenderTarget。创造(主窗口);
 		});
 	}
 
-	public static void updateWindowSize(Window mainWindow) {
-		if (framebuffer != null)
-			framebuffer.resize(mainWindow.getWidth(), mainWindow.getHeight(), Minecraft.ON_OSX);
+公共 静态的 无效的updateWindowSize(窗户主窗口) {
+		如果 (帧缓冲区！=无效的)
+帧缓冲区。调整大小(主窗口。getWidth()，主窗口。getHeight()，Minecraft.ON_OSX);
 	}
 
-	public static void drawFramebuffer(float alpha) {
-		framebuffer.renderWithAlpha(alpha);
+公共 静态的 无效的drawFramebuffer(漂浮阿尔法) {
+帧缓冲区。renderWithAlpha(阿尔法);
 	}
 
 	/**
-	 * Switch from src to dst, after copying the contents of src to dst.
-	 */
-	public static void swapAndBlitColor(RenderTarget src, RenderTarget dst) {
-		GlStateManager._glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, src.frameBufferId);
-		GlStateManager._glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, dst.frameBufferId);
-		GlStateManager._glBlitFrameBuffer(0, 0, src.viewWidth, src.viewHeight, 0, 0, dst.viewWidth, dst.viewHeight, GL30.GL_COLOR_BUFFER_BIT, GL20.GL_LINEAR);
+*将src的内容复制到dst后，从src切换到dst.
+*/
+公共 静态的 无效的swapAndBlitColor(renderTargetsrc，RenderTargetDST) {
+GlStateManager。_glBindFramebuffer(GL30.GL_READ_framebuffer，src.frameBufferId);
+GlStateManager。_glBindFramebuffer(GL30.GL_DRAW_framebuffer，dst.frameBufferId);
+GlStateManager。_glBlitFrameBuffer(0,0，src.viewWidth，src.viewHeight，0,0，dst.ViewWidth，dst.ViewHeight，GL30.gl_COLOR_BUFFER_BIT，GL20.gl_LINEAR);
 
-		GlStateManager._glBindFramebuffer(GlConst.GL_FRAMEBUFFER, dst.frameBufferId);
+GlStateManager。_glBindFramebuffer(GlConst.GL_framebuffer，dst.frameBufferId);
 	}
 
-	public static void streak(PoseStack ms, float angle, int x, int y, int breadth, int length) {
-		streak(ms, angle, x, y, breadth, length, Theme.i(Theme.Key.STREAK));
+	公共 静态的 无效的 条纹(PoseStack女士，float角，intx，inty，int宽度，int长度) {
+		条纹(Ms，角度，x，y，宽度，长度，主题。我(主题.键.STREAK));
 	}
-	// angle in degrees; 0° -> fading to the right
-	// x and y specify the middle point of the starting edge
-	// breadth is the total width of the streak
+	//角度(以度为单位)；0°->向右渐淡
+	//x和y指定起始边的中点
+	//宽度是条纹的总宽度
 
 	public static void streak(PoseStack ms, float angle, int x, int y, int breadth, int length, int color) {
 		int a1 = 0xa0 << 24;
@@ -292,7 +292,7 @@ public class UIRenderHelper {
 			CustomRenderTarget framebuffer = new CustomRenderTarget(true);
 			framebuffer.resize(mainWindow.getWidth(), mainWindow.getHeight(), Minecraft.ON_OSX);
 			framebuffer.setClearColor(0, 0, 0, 0);
-			framebuffer.enableStencil();
+			
 			return framebuffer;
 		}
 
